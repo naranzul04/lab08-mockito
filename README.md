@@ -41,11 +41,11 @@ lab08-mockito/
     └── mvn-test-mutant-3.txt
 ```
 
-## Хэсэг A — Нэгжийн тестүүд
+## Хэсэг A — Тестүүд
 
-esults/mvn-test.txt файлын сүүлийн үр дүн: **Tests run: 10, Failures: 0, Errors: 0, Skipped: 0 — BUILD SUCCESS** (7 энгийн @Test метод + @ParameterizedTest-ийн 3 CSV мөр).
+esults/mvn-test.txt файлын сүүлийн мөр: **Tests run: 10, Failures: 0, Errors: 0, Skipped: 0 — BUILD SUCCESS** (7 энгийн тест + A8-ийн 3 CSV мөр).
 
-| № | Тестийн метод | Гол хэрэгсэл |
+| № | Тестийн метод | Ашигласан зүйл |
 |---|---|---|
 | A1 | egister_activeStudentWithPrerequisites_returnsOkAndSavesAndSendsEmail | when + erify |
 | A2 | egister_nonExistentStudent_returnsErrorNoStudentWithoutSavingOrSendingEmail | erify(..., never()) |
@@ -57,23 +57,23 @@ ever |
 | A7 | egister_successfulRegistration_emailBodyContainsCourseId | ArgumentCaptor |
 | A8 | egister_errorScenarios_returnExpectedErrorCode (3 мөр) | @ParameterizedTest + @CsvSource |
 
-Matcher ашигласан erify / when дуудалт бүрд бүх аргумент дээр тохирох matcher (eq(...), nyString(), contains(...)) хэрэглэсэн.
+Matcher хэрэглэсэн бүх дуудалт дээр аргумент бүрд нь matcher (eq(...), nyString(), contains(...)) тавьсан.
 
 ### A8 дахь lenient()-ийн тайлбар
 
-A8 параметржүүлсэн тестийн CSV мөр бүр egister()-ийн өөр нөхцөл дээр зогсдог тул тухайн мөрийн замд хүрэлгүй ашиглагдахгүй үлдэх stub гарах боломжтой. MockitoExtension-ий strict stubbing шалгалт ашиглагдаагүй stub дээр UnnecessaryStubbingException үүсгэхээс сэргийлж lenient().when(...) ашигласан.
+A8 тестийн CSV мөр бүр дээр өөр өөр нөхцөл шалгадаг болохоор зарим мөрд тохируулсан stub нь тухайн замд хүрэхгүй дуудагдахгүй үлддэг. Mockito-гийн энгийн (strict) горим ашиглагдаагүй stub дээр алдаа өгдөг тул тэр мөрүүдийг алдаагүй ажиллуулахын тулд lenient().when(...) хэрэглэсэн.
 
-## Хэсэг B — Мини мутацийн шинжилгээ
+## Хэсэг B — Мини мутаци
 
-| Мутант | Түр өөрчлөлт | Унасан тестүүд | Тайлбар |
+| Мутант | Хийсэн өөрчлөлт | Унасан тестүүд | Тайлбар |
 |---|---|---|---|
-| Мутант 1 | if (!student.active()) return "ERROR_INACTIVE_STUDENT"; комментлов | egister_inactiveStudent_returnsErrorInactiveStudentAndNoEmailInteraction, egister_errorScenarios_returnsExpectedErrorCode | Идэвхгүй оюутны шалгалт алдагдсаныг тест илрүүлэв (esults/mvn-test-mutant-1.txt) |
-| Мутант 2 | epository.saveRegistration(studentId, courseId); комментлов | egister_activeStudentWithPrerequisites_returnsOkAndSavesAndSendsEmail, egister_emailSenderThrowsException_stillReturnsOkAndSavesRegistration | Бүртгэл хадгалаагүйг erify барив (esults/mvn-test-mutant-2.txt) |
-| Мутант 3 | if (studentId == null \|\| courseId == null) -> if (studentId == null) | egister_nullArguments_throwsIllegalArgumentExceptionWithNoInteractions | courseId == null үед exception шидээгүйг A6 барив (esults/mvn-test-mutant-3.txt) |
+| Мутант 1 | if (!student.active()) return "ERROR_INACTIVE_STUDENT"; комментлосон | egister_inactiveStudent_returnsErrorInactiveStudentAndNoEmailInteraction, egister_errorScenarios_returnsExpectedErrorCode | Идэвхгүй оюутныг шалгахгүй болсныг тест барьсан (esults/mvn-test-mutant-1.txt) |
+| Мутант 2 | epository.saveRegistration(studentId, courseId); комментлосон | egister_activeStudentWithPrerequisites_returnsOkAndSavesAndSendsEmail, egister_emailSenderThrowsException_stillReturnsOkAndSavesRegistration | Хадгалах функц дуудагдаагүйг erify барьсан (esults/mvn-test-mutant-2.txt) |
+| Мутант 3 | if (studentId == null \|\| courseId == null) -> if (studentId == null) | egister_nullArguments_throwsIllegalArgumentExceptionWithNoInteractions | courseId == null үед алдаа шидэхгүй болсныг A6 барьсан (esults/mvn-test-mutant-3.txt) |
 
-**Мутацийн ажиглалт:** Гурван мутант бүгд тестүүдээр баригдаж BUILD FAILURE болсон. A6 тестэд хоёр параметрийн аль алиных нь 
-ull тохиолдлыг шалгасан тул 3-р мутант илэрсэн; харин и-мэйлийн агуулгыг голчлон шалгадаг A7 нь хадгалалтын алдааг (Мутант 2) шалгахгүй байгаа нь нэг тест нэг гол зан төлөвийг шалгах зарчимд нийцэж байна.
+**Мутацийн тухай:** 3 мутантыг гурвууланг нь тестүүд маань барьж чадсан (BUILD FAILURE). A6 тест дээр studentId болон courseId хоёулангийнх нь 
+ull тохиолдлыг тус тусад нь шалгасан болохоор 3-р мутант шууд баригдсан. Харин A7 тест зөвхөн и-мэйлийн утгыг шалгадаг тул Мутант 2-ыг бариагүй, тэр хэсгийг A1 болон A5 тестүүд хамгаалж байна.
 
 ## Дүгнэлт
 
-Mock объект нь хамаарлын зан төлөв, буцаах утга болон дуудлагыг (when, erify, ArgumentCaptor) тест дотор тодорхойлж шалгахад тохиромжтой бол гараар бичсэн fake нь дотоод төлөв хадгалдаг хялбаршуулсан бодит хэрэгжүүлэлт юм. Гадаад эсвэл удаан хамаарлыг (StudentRepository, EmailSender) mock-оор орлуулах нь зохимжтой боловч энгийн өгөгдлийн объект (Student, List, String) эсвэл тестлэгдэж буй классыг өөрийг нь mock хийх хэрэггүй. Мөн erify-ийг дотоод жижиг алхам бүрд хэт олноор тавьбал кодын бүтцийг цэгцлэхэд (refactoring) үйлдэл нь зөв байсан ч тест хуурамчаар унах эрсдэлтэй тул зөвхөн бодит үр дагавартай харилцан үйлчлэлийг шалгах нь зүйтэй.
+Mock гэдэг нь хамаарлын буцаах утгыг when-ээр тохируулаад, ямар дуудалт хийгдсэнийг erify-ээр шалгадаг орлуулагч объект юм. Харин fake нь жишээ нь HashMap ашиглаад өгөгдлөө өөр дээрээ хадгалдаг хялбаршуулсан бодит код байдаг. Өгөгдлийн сан, и-мэйл илгээгч шиг гаднын хамаарлыг mock хийх нь зөв ч Student, List, String зэрэг энгийн өгөгдлийн объектуудыг mock хийх хэрэггүй, шууд бодитоор нь үүсгэсэн нь дээр. Мөн erify-ийг хэт олон жижиг зүйл дээр тавьбал дараа нь кодоо цэгцэлж өөрчлөх үед логик нь зөв байсан ч тест унаад байдаг сул талтай. Хэсэг B-ийн мутаци хийж үзсэнээр манай тестүүд зөвхөн ногоон гараад зогсохгүй, кодод алдаа гарахад бодитоор илрүүлж чадаж байгаа нь харагдлаа.
